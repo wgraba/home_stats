@@ -1,6 +1,9 @@
 # Purpose
 Gather statistics (with or without Telegraf) into influxdb and show with Grafana.
 
+# Prereqisites
+* Traefik
+
 # Tools/Services
 * InfluxDB - Database
 * Telegraf - Server agent
@@ -8,6 +11,7 @@ Gather statistics (with or without Telegraf) into influxdb and show with Grafana
 * Arris Cable Modem Stats - Gather stats from SB8200 cable modem
 
 # Running
-* Modify `docker-compose.yml` and `*.env` files
+* Modify `docker-compose.yml` and `*.env` files (see `*_env_example` files)
+* Modify `telegraf/mytelegraf.conf`
 * Run `docker compose up -d`
 * Use `docker compose logs -f` to follow logs
