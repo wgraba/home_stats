@@ -1,0 +1,89 @@
+version: '3'
+services:
+  influxdb:
+    image: influxdb:2.0
+    volumes:
+      - /mnt/storage/stats/influxdbv2:/var/lib/influxdb2:rw
+      # - ./ssl/influxdb-selfsigned.crt:/etc/ssl/influxdb-selfsigned.crt:rw
+      # - ./ssl/influxdb-selfsigned.key:/etc/ssl/influxdb-selfsigned.key:rw
+    # ports:
+    #   - "8086:8086"
+    networks:
+      - stats 
+      - web
+    env_file:
+      - ./influxv2.env
+    restart: on-failure:10
+    labels:
+      - traefik.http.routers.influx.entryPoints=web-secure
+      - traefik.http.routers.influx.rule=Host(`influx.federation.home`)
+      - traefik.http.routers.influx.tls=true
+      - traefik.http.services.influx.loadbalancer.server.port=8086
+
+  # Use the influx cli to set up an influxdb instance. 
+  influxdb_cli:
+    image: influxdb:2.0
+    networks: 
+      - stats
+    profiles:
+      - setup
+    env_file: 
+      - ./influxv2.env
+    entrypoint: ["./entrypoint.sh"]
+    depends_on:
+      - influxdb
+
+  grafana:
+    image: grafana/grafana:8.1.1
+    volumes: 
+      - grafana-storage:/var/lib/grafana
+    networks:
+      - stats
+      - web
+    env_file: 
+      - ./grafana.env
+    depends_on: 
+      - influxdb
+      - grafana-renderer
+    restart: on-failure:20
+    labels:
+      - traefik.http.routers.grafana.entryPoints=web-secure
+      - traefik.http.routers.grafana.rule=Host(`grafana.federation.home`)
+      - traefik.http.routers.grafana.tls=true
+      - traefik.http.services.grafana.loadbalancer.server.port=3000
+
+  grafana-renderer:
+    image: grafana/grafana-image-renderer:latest
+    networks: 
+      - stats
+
+  telegraf:
+    image: telegraf:1.19
+    volumes:
+      - ./telegraf/mytelegraf.conf:/etc/telegraf/telegraf.conf
+    networks: 
+      - stats
+    env_file:
+      - ./influxv2.env
+    depends_on:
+      - influxdb
+    restart: on-failure:20
+
+  arris_stats:
+    build:
+      context: ./arris_cable_modem_stats
+    networks: 
+      - stats
+    env_file:
+      - ./arris_stats.env
+    depends_on: 
+      - influxdb
+    restart: on-failure:30
+
+volumes: 
+  grafana-storage:
+
+networks: 
+  stats:
+  web:
+    external: true
