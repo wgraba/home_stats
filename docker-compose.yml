@@ -13,7 +13,7 @@ services:
       - web
     env_file:
       - ./influxv2.env
-    restart: on-failure:10
+    restart: unless-stopped
     labels:
       - traefik.http.routers.influx.entryPoints=web-secure
       - traefik.http.routers.influx.rule=Host(`influx.federation.home`)
@@ -45,7 +45,7 @@ services:
     depends_on: 
       - influxdb
       - grafana-renderer
-    restart: on-failure:20
+    restart: unless-stopped
     labels:
       - traefik.http.routers.grafana.entryPoints=web-secure
       - traefik.http.routers.grafana.rule=Host(`grafana.federation.home`)
@@ -61,13 +61,16 @@ services:
     image: telegraf:1.19
     volumes:
       - ./telegraf/mytelegraf.conf:/etc/telegraf/telegraf.conf
+      - /proc:/hostfs/proc:ro
     networks: 
       - stats
     env_file:
       - ./influxv2.env
+    environment: 
+      - HOST_PROC=/hostfs/proc
     depends_on:
       - influxdb
-    restart: on-failure:20
+    restart: unless-stopped
 
   arris_stats:
     build:
@@ -78,7 +81,7 @@ services:
       - ./arris_stats.env
     depends_on: 
       - influxdb
-    restart: on-failure:30
+    restart: unless-stopped
 
 volumes: 
   grafana-storage:
