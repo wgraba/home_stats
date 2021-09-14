@@ -17,5 +17,6 @@ Gather statistics (with or without Telegraf) into influxdb and show with Grafana
 * Use `docker compose logs -f` to follow logs
 
 # TODO
-- [ ] Recover after cable modem restart
+- [x] Recover after cable modem restart
 - [x] Find good Disk IO and Network stats from Telegraf
+- [ ] Send notification when cable modem restart is needed
