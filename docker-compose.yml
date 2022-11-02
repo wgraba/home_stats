@@ -1,7 +1,7 @@
 version: '3'
 services:
   influxdb:
-    image: influxdb:2.4
+    image: influxdb:2.5
     volumes:
       - /mnt/storage/stats/influxdbv2:/var/lib/influxdb2:rw
       # - ./ssl/influxdb-selfsigned.crt:/etc/ssl/influxdb-selfsigned.crt:rw
@@ -34,7 +34,7 @@ services:
       - influxdb
 
   grafana:
-    image: grafana/grafana:9.2.2
+    image: grafana/grafana:9.2.3
     volumes: 
       - grafana-storage:/var/lib/grafana
     networks:
