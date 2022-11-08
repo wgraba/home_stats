@@ -34,7 +34,7 @@ services:
       - influxdb
 
   grafana:
-    image: grafana/grafana:9.2.3
+    image: grafana/grafana:9.2.4
     volumes: 
       - grafana-storage:/var/lib/grafana
     networks:
