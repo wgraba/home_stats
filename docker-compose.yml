@@ -22,7 +22,7 @@ services:
 
   # Use the influx cli to set up an influxdb instance. 
   influxdb_cli:
-    image: influxdb:2.4
+    image: influxdb:2.6
     networks: 
       - stats
     profiles:
@@ -34,7 +34,7 @@ services:
       - influxdb
 
   grafana:
-    image: grafana/grafana:9.3.6
+    image: grafana/grafana:9.4.3
     volumes: 
       - grafana-storage:/var/lib/grafana
     networks:
