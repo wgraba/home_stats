@@ -58,17 +58,6 @@ services:
       - stats
     restart: unless-stopped
 
-  arris_stats:
-    build:
-      context: ./arris_cable_modem_stats
-    networks: 
-      - stats
-    env_file:
-      - ./arris_stats.env
-    depends_on: 
-      - influxdb
-    restart: unless-stopped
-
 volumes: 
   grafana-storage:
 

@@ -1,3 +1,0 @@
-[submodule "arris_cable_modem_stats"]
-	path = arris_cable_modem_stats
-	url = https://github.com/wgraba/arris_cable_modem_stats.git
